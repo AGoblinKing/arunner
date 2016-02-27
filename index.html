@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf8">
+  <title> A-Runner </title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;  
+    }
+  </style>
+  <script type="text/javascript" src="lib/aframe.js"></script>
+  <script type="text/javascript" src="lib/oimo.js"></script>
+  <script type="text/javascript" src="lib/aphysics.js"></script>
+  <script type="text/javascript" src="lib/aframe-text.js"></script>
+  <script type="text/javascript" src="lib/aframe-template.js"></script>
+  <script type="text/javascript" src="lib/aframe-layout.js"></script>
+  <script type="text/javascript" src="components/destroy-range.js"></script>
+  <script type="text/javascript" src="components/spawner.js"></script>
+  <script type="text/javascript">
+    (function() {
+      'use strict';
+      var state = 'START';
+      
+      document.addEventListener('mousedown', function(e) {
+        if (state === 'START') {
+          document.getElementById('titleEntity').setAttribute('physics', 'bb: 0 0 0');
+          document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
+          state = 'RUNNING';
+        }  
+      });
+    }());
+  </script>
+</head>
+<body>    
+  <a-scene world="gravity: 0 0 0.5">
+    <a-assets>
+      <a-mixin id="cube" geometry="primitive: box" material="color: red;" physics></a-mixin>
+      
+      <!-- templates -->
+      <script id="circle" type="text/x-jade-template">
+        - for(var i = 0; i < 5 + Math.floor(Math.random() * 10); i++) { 
+          <a-entity mixin="cube" position="#{Math.random()*30 - 15} #{Math.random()*5 - 2.5} #{Math.random()*10 - 5}"></a-entity>
+        - }
+      </script>
+      
+      <script id="title" type="text/x-nunjucks-template">
+        <a-entity text="text: A-Runner" position="-1.5 1 0" material="color: blue">
+          <a-animation attribute="rotation"
+                  to="360 0 0"
+                  dur="1000"
+                  fill="forwards">
+          </a-animation>
+        </a-entity>
+        
+        <a-entity text="text: Touch to Start" position="-2.5 -3 -5" material="color: red">
+          <a-animation attribute="material.opacity"
+                  from="0"
+                  to="1"
+                  dur="300"
+                  repeat="indefinite">
+          </a-animation>
+        </a-entity>
+      </script>
+    </a-assets>
+    <a-entity camera="near: 0.01;" look-controls position="0 0 2" physics="move:false;"></a-entity>
+    <!-- init scene -->
+    <a-entity id="movers">
+      <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 1000 2000"></a-entity>
+      <a-entity id="titleEntity" template="src: #title" destroy-range="z: 3"></a-entity>
+    </a-entity>
+  </a-scene>
+</body>
+</html>
