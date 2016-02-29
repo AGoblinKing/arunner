@@ -2,6 +2,37 @@
 
 (function () {
   'use strict';
+  const cache = {
+    get(data) {
+      const key = data.id;
+
+      if (!this[key]) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = data.width;
+        canvas.height = data.height;
+
+        const texture = new THREE.Texture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
+        switch (data.type) {
+          default:
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillRect(0, 0, data.width, data.height);
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 100;
+            ctx.strokeRect(0, 0, data.width, data.height);
+        }
+
+        texture.repeat.set(data.repeat[0], data.repeat[1]);
+        texture.needsUpdate = true;
+        this[key] = texture;
+      }
+
+      return this[key];
+    }
+  };
 
   AFRAME.registerComponent('proc-texture', {
     schema: {
@@ -13,33 +44,12 @@
         parse(data) {
           return data.split(' ').map(Number);
         }
-      }
+      },
+      id: { default: 'default' }
     },
-
-    init() {
-      this.canvas = document.createElement('canvas');
-      this.ctx = this.canvas.getContext('2d');
-      this.texture = new THREE.Texture(this.canvas);
-      this.texture.wrapS = THREE.RepeatWrapping;
-      this.texture.wrapT = THREE.RepeatWrapping;
-    },
-
     update() {
       const target = this.el.getOrCreateObject3D('mesh');
-      this.canvas.width = this.data.width;
-      this.canvas.height = this.data.height;
-
-      switch (this.data.type) {
-        default:
-          this.ctx.fillStyle = 'rgb(0, 0, 0)';
-          this.ctx.fillRect(0, 0, this.data.width, this.data.height);
-          this.ctx.strokeStyle = 'white';
-          this.ctx.lineWidth = 100;
-          this.ctx.strokeRect(0, 0, this.data.width, this.data.height);
-      }
-      this.texture.repeat.set(this.data.repeat[0], this.data.repeat[1]);
-      this.texture.needsUpdate = true;
-      target.material.map = this.texture;
+      target.material.map = cache.get(this.data);
     }
   });
 }());
