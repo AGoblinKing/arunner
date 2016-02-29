@@ -28,9 +28,8 @@
       var state = 'START';
       
       document.addEventListener('mousedown', function(e) {
-       
         if (state === 'START') {
-          document.getElementById('titleEntity').setAttribute('physics', 'bb: 0 0 0');
+          document.getElementById('titleEntity').setAttribute('physics', 'bb: 0.1 0.1 0.1');
           document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
           state = 'RUNNING';
         }  
@@ -42,17 +41,17 @@
   <a-scene fog="type: linear; color: #000; far: 100" world="gravity: 0 0 0.5" >
     <a-assets>
       <a-mixin id="cube" proc-texture="type: grid; id: cube" geometry="primitive: box" material="color: red;" physics></a-mixin>
-      <a-mixin id="wall" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 25 25" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
+      <a-mixin id="wall" physics="move: false" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 25 25" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
       
       <!-- templates -->
       <script id="circle" type="text/x-jade-template">
-        - for(var i = 0; i < 5 + Math.floor(Math.random() * 10); i++) { 
+        - for(var i = 0; i < 5 + Math.floor(Math.random() * 30); i++) { 
           <a-entity mixin="cube" position="#{Math.random()*40 - 20} #{Math.random()*40 - 20} #{Math.random()*10 - 10}"></a-entity>
         - }
       </script>
       
       <script id="title" type="text/x-nunjucks-template">
-        <a-entity proc-texture="type: grid; repeat: 25 25" text="text: A-Runner" position="-1.5 1 0" material="color: blue">
+        <a-entity proc-texture="type: grid; id: title;repeat: 25 25" text="text: A-Runner" position="-1.5 1 0" material="color: blue">
           <a-animation attribute="rotation"
                   to="360 0 0"
                   dur="1000"
@@ -60,7 +59,7 @@
           </a-animation>
         </a-entity>
         
-        <a-entity proc-texture="type: grid; repeat: 25 25" text="text: Touch to Start" position="-2.5 -3 -5" material="color: red">
+        <a-entity proc-texture="type: grid; id: start; repeat: 25 25" text="text: Touch to Start" position="-2.5 -3 -5" material="color: red">
           <a-animation attribute="material.opacity"
                   from="0"
                   to="1"
@@ -72,11 +71,13 @@
     </a-assets>
     <a-sky color="#000"></a-sky>
     <a-entity camera="near: 0.01;" look-controls wasd-controls position="0 0 2" physics="move:false;"></a-entity>
+    
     <!-- init scene -->
     <a-entity id="movers">
-      <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 1000 2000"></a-entity>
+      <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 1000 1500"></a-entity>
       <a-entity id="titleEntity" template="src: #title" destroy-range="z: 3"></a-entity>
     </a-entity>
+    
     <a-entity id="board">
       <a-entity position="-21 0 -40" mixin="wall" proc-texture="id: left"></a-entity>
       <a-entity position="21 0 -40" mixin="wall" proc-texture="id: right"></a-entity>

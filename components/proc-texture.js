@@ -2,37 +2,43 @@
 
 (function () {
   'use strict';
+
+  function createTexture(data) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = data.width;
+    canvas.height = data.height;
+
+    const texture = new THREE.Texture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    switch (data.type) {
+      default:
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(0, 0, data.width, data.height);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 100;
+        ctx.strokeRect(0, 0, data.width, data.height);
+    }
+
+    texture.repeat.set(data.repeat[0], data.repeat[1]);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
   const cache = {
     get(data) {
       const key = data.id;
 
       if (!this[key]) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = data.width;
-        canvas.height = data.height;
-
-        const texture = new THREE.Texture(canvas);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-
-        switch (data.type) {
-          default:
-            ctx.fillStyle = 'rgb(0, 0, 0)';
-            ctx.fillRect(0, 0, data.width, data.height);
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 100;
-            ctx.strokeRect(0, 0, data.width, data.height);
-        }
-
-        texture.repeat.set(data.repeat[0], data.repeat[1]);
-        texture.needsUpdate = true;
-        this[key] = texture;
+        this[key] = createTexture(data);
       }
 
       return this[key];
     }
   };
+
 
   AFRAME.registerComponent('proc-texture', {
     schema: {
