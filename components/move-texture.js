@@ -6,7 +6,7 @@
   AFRAME.registerComponent('move-texture', {
     schema: {
       speed: {
-        default: [0, 5], // amount a second
+        default: [0, 1], // amount a second
         parse(data) {
           return data.split(' ').map(Number);
         }
