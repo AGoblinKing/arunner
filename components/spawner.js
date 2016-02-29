@@ -6,16 +6,7 @@
   AFRAME.registerComponent('spawner', {
     schema: {
       enabled: { default: true },
-      /* will use new array type */
-      templates: {
-        default: [],
-        parse(val) {
-          return val.split(' ');
-        },
-        stringify(data) {
-          return data.join(' ');
-        }
-      },
+      templates: { default: [] },
       timing: {
         default: { min: 0, max: 1000 },
         parse(val) {

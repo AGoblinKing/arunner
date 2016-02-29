@@ -20,12 +20,15 @@
   <script type="text/javascript" src="lib/aframe-layout.js"></script>
   <script type="text/javascript" src="components/destroy-range.js"></script>
   <script type="text/javascript" src="components/spawner.js"></script>
+  <script type="text/javascript" src="components/proc-texture.js"></script>
+  <script type="text/javascript" src="components/move-texture.js"></script>
   <script type="text/javascript">
     (function() {
       'use strict';
       var state = 'START';
       
       document.addEventListener('mousedown', function(e) {
+       
         if (state === 'START') {
           document.getElementById('titleEntity').setAttribute('physics', 'bb: 0 0 0');
           document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
@@ -36,9 +39,10 @@
   </script>
 </head>
 <body>    
-  <a-scene world="gravity: 0 0 0.5">
+  <a-scene fog="type: linear; color: #000; far: 100" world="gravity: 0 0 0.5" >
     <a-assets>
       <a-mixin id="cube" geometry="primitive: box" material="color: red;" physics></a-mixin>
+      <a-mixin id="wall" move-texture="speed: 0 1" proc-texture="type: grid;repeat: 100 100" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
       
       <!-- templates -->
       <script id="circle" type="text/x-jade-template">
@@ -66,11 +70,18 @@
         </a-entity>
       </script>
     </a-assets>
-    <a-entity camera="near: 0.01;" look-controls position="0 0 2" physics="move:false;"></a-entity>
+    <a-sky color="#000"></a-sky>
+    <a-entity camera="near: 0.01;" look-controls wasd-controls position="0 0 2" physics="move:false;"></a-entity>
     <!-- init scene -->
     <a-entity id="movers">
       <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 1000 2000"></a-entity>
       <a-entity id="titleEntity" template="src: #title" destroy-range="z: 3"></a-entity>
+    </a-entity>
+    <a-entity id="board">
+      <a-entity position="-21 0 -40" mixin="wall"></a-entity>
+      <a-entity position="21 0 -40" mixin="wall"></a-entity>
+      <a-entity position="0 -20 -40" mixin="wall" rotation="-90 0 0"></a-entity>
+      <a-entity position="0 20 -40" mixin="wall" rotation="-90 0 0"></a-entity>
     </a-entity>
   </a-scene>
 </body>

@@ -6,4 +6,7 @@ A simple running game for A-Frame in VDOM and COMPONENT varieties.
 
 ## TODO
  - [ ] Check aphysics changes in to repo
+ - [ ] Sides/ground 
+ - [ ] Texture UV'ing
+ - [ ] Texture Generation
  
