@@ -17,7 +17,7 @@
   <script type="text/javascript" src="lib/aphysics.js"></script>
   <script type="text/javascript" src="lib/aframe-text.js"></script>
   <script type="text/javascript" src="lib/aframe-template.js"></script>
-  <script type="text/javascript" src="lib/aframe-layout.js"></script>
+  <script type="text/javascript" src="components/look-move.js"></script>
   <script type="text/javascript" src="components/destroy-range.js"></script>
   <script type="text/javascript" src="components/spawner.js"></script>
   <script type="text/javascript" src="components/proc-texture.js"></script>
@@ -70,7 +70,7 @@
       </script>
     </a-assets>
     <a-sky color="#000"></a-sky>
-    <a-entity camera="near: 0.01;" look-controls wasd-controls position="0 0 2" physics="move:false;"></a-entity>
+    <a-entity camera="near: 0.01;" look-controls look-move position="0 0 2" physics="move:false;"></a-entity>
     
     <!-- init scene -->
     <a-entity id="movers">
