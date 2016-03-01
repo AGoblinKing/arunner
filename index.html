@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf8">
   <title> A-Runner </title>
+  <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
   <style>
     html, body {
       width: 100%;
@@ -10,8 +11,38 @@
       overflow: hidden;
       margin: 0px;
       padding: 0px;  
+      font-family: 'Press Start 2P';
+    }
+    #giveThanks {
+      width: 100%;
+      font-color: white;
+       text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+      text-align: center;
+      z-index: 10;
+      color: white;
+      position: absolute;
+      bottom: 0px;
+    }
+    #touchToRun {
+      width: 100%;
+      text-align: center;
+      position: absolute;
+      bottom: 30%;
+      color: red;
+      text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+      z-index:10;
     }
   </style>
+  
+  <!-- Recommend using a module loader like webpack, browserify, or anything else -->
   <script type="text/javascript" src="lib/aframe.js"></script>
   <script type="text/javascript" src="lib/oimo.js"></script>
   <script type="text/javascript" src="lib/aphysics.js"></script>
@@ -22,67 +53,69 @@
   <script type="text/javascript" src="components/spawner.js"></script>
   <script type="text/javascript" src="components/proc-texture.js"></script>
   <script type="text/javascript" src="components/move-texture.js"></script>
+  <script type="text/javascript" src="lib/silkscreen.js"></script>
   <script type="text/javascript">
+    var enemyCount = 20;
     (function() {
       'use strict';
       var state = 'START';
+      
+      setInterval(function() {
+        if (state === 'RUNNING') {
+          enemyCount = Math.min(50, enemyCount + 1);
+        }
+      }, 1000);
       
       document.addEventListener('mousedown', function(e) {
         if (state === 'START') {
           document.getElementById('titleEntity').setAttribute('physics', 'bb: 0.1 0.1 0.1');
           document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
           state = 'RUNNING';
+          enemyCount = 20;
         }  
       });
     }());
   </script>
 </head>
-<body>    
+<body>
+  <div id="giveThanks">
+    <div>Song <a href="http://store.d.notive.cc/track/hells-highway">Hell's Highway</a> used with Permission from <a href="http://www.d.notive.cc/">D.Notive</a></div>
+  </div>
+  <audio autoplay loop src="d.notive-HellsHighway.mp3"></audio>
   <a-scene fog="type: linear; color: #000; far: 100" world="gravity: 0 0 0.5" >
     <a-assets>
       <a-mixin id="cube" proc-texture="type: grid; id: cube" geometry="primitive: box" material="color: red;" physics></a-mixin>
-      <a-mixin id="wall" physics="move: false" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 25 25" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
+      <a-mixin id="wall" physics="move: false" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 24 24" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
       
       <!-- templates -->
       <script id="circle" type="text/x-jade-template">
-        - for(var i = 0; i < 5 + Math.floor(Math.random() * 30); i++) { 
-          <a-entity mixin="cube" position="#{Math.random()*40 - 20} #{Math.random()*40 - 20} #{Math.random()*10 - 10}"></a-entity>
+        - for(var i = 0; i < 5 + Math.floor(Math.random() * enemyCount); i++) { 
+          <a-entity mixin="cube" position="#{Math.random()*20 - 10} #{Math.random()*20 - 10} #{Math.random()*20 - 10}"></a-entity>
         - }
       </script>
       
       <script id="title" type="text/x-nunjucks-template">
-        <a-entity proc-texture="type: grid; id: title;repeat: 25 25" text="text: A-Runner" position="-1.5 1 0" material="color: blue">
-          <a-animation attribute="rotation"
-                  to="360 0 0"
-                  dur="1000"
-                  fill="forwards">
-          </a-animation>
+        <a-entity proc-texture="type: grid; id: title;repeat: 15 15" move-texture="speed: -9 9" text="font: Silkscreen Expanded;text: Runner" position="-2.0 0.5 0.2" material="color: blue">
         </a-entity>
-        
-        <a-entity proc-texture="type: grid; id: start; repeat: 25 25" text="text: Touch to Start" position="-2.5 -3 -5" material="color: red">
-          <a-animation attribute="material.opacity"
-                  from="0"
-                  to="1"
-                  dur="300"
-                  repeat="indefinite">
-          </a-animation>
-        </a-entity>
+        <div id="touchToRun">
+          Touch To Run
+        </div>
       </script>
     </a-assets>
     <a-sky color="#000"></a-sky>
-    <a-entity camera="near: 0.01;" look-controls look-move position="0 0 2" physics="move:false;"></a-entity>
+    <a-entity camera="near: 0.01;" look-controls look-move="max:10;min: -10" position="0 0 2" physics="move:false;"></a-entity>
     
     <!-- init scene -->
     <a-entity id="movers">
-      <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 1000 1500"></a-entity>
+      <a-entity id="spawner" position="0 0 -100" spawner="templates: #circle; enabled: false; timing: 500 500"></a-entity>
       <a-entity id="titleEntity" template="src: #title" destroy-range="z: 3"></a-entity>
     </a-entity>
     
     <a-entity id="board">
-      <a-entity position="-21 0 -40" mixin="wall" proc-texture="id: left"></a-entity>
-      <a-entity position="21 0 -40" mixin="wall" proc-texture="id: right"></a-entity>
-      <a-entity position="0 -20 -40" mixin="wall" proc-texture="id: bottom" move-texture="speed: 0 9" rotation="-90 0 0"></a-entity>
-      <a-entity position="0 20 -40" mixin="wall" proc-texture="id: top" move-texture="speed: 0 9" rotation="-90 0 0"></a-entity>
+      <a-entity position="-11 0 -40" mixin="wall" proc-texture="id: left"></a-entity>
+      <a-entity position="11 0 -40" mixin="wall" proc-texture="id: right"></a-entity>
+      <a-entity position="0 -11 -40" mixin="wall" proc-texture="id: bottom" move-texture="speed: 0 9" rotation="-90 0 0"></a-entity>
+      <a-entity position="0 11 -40" mixin="wall" proc-texture="id: top" move-texture="speed: 0 9" rotation="-90 0 0"></a-entity>
     </a-entity>
   </a-scene>
 </body>

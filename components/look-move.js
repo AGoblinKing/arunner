@@ -13,12 +13,10 @@
         default: 10
       },
       max: {
-        type: 'vec3',
-        default: '20 20 20'
+        default: 20
       },
       min: {
-        type: 'vec3',
-        default: '-20 -20 20'
+        default: -20
       }
     },
 
@@ -36,8 +34,8 @@
       // updateMatrixWorld called every render anyhow
       this.vec.setFromMatrixPosition(this.target.matrixWorld);
       this.vec.sub(this.el.object3D.position);
-      const x = THREE.Math.clamp(this.el.object3D.position.x + dir(this.vec.x) * this.data.speed * delta, -20, 20);
-      const y = THREE.Math.clamp(this.el.object3D.position.y + dir(this.vec.y) * this.data.speed * delta, -19, 19);
+      const x = THREE.Math.clamp(this.el.object3D.position.x + dir(this.vec.x) * this.data.speed * delta, this.data.min, this.data.max);
+      const y = THREE.Math.clamp(this.el.object3D.position.y + dir(this.vec.y) * this.data.speed * delta, this.data.min, this.data.max);
       this.el.setAttribute('position', [x, y, this.el.object3D.position.z].join(' '));
       this.lastTime = time;
     }
