@@ -54,38 +54,13 @@
   <script type="text/javascript" src="components/proc-texture.js"></script>
   <script type="text/javascript" src="components/move-texture.js"></script>
   <script type="text/javascript" src="lib/silkscreen.js"></script>
-  <script type="text/javascript">
-    var enemyCount = 20;
-    (function() {
-      'use strict';
-      var state = 'START';
-      
-      setInterval(function() {
-        if (state === 'RUNNING') {
-          enemyCount = Math.min(50, enemyCount + 1);
-        }
-      }, 1000);
-      
-      document.addEventListener('mousedown', function(e) {
-        if (state === 'START') {
-          document.getElementById('titleEntity').setAttribute('physics', 'bb: 0.1 0.1 0.1');
-          document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
-          state = 'RUNNING';
-          enemyCount = 20;
-        }  
-      });
-    }());
-  </script>
+
 </head>
 <body>
-  <div id="giveThanks">
-    <div>Song <a href="http://store.d.notive.cc/track/hells-highway">Hell's Highway</a> used with Permission from <a href="http://www.d.notive.cc/">D.Notive</a></div>
-  </div>
-  <audio autoplay loop src="d.notive-HellsHighway.mp3"></audio>
-  <a-scene fog="type: linear; color: #000; far: 100" world="gravity: 0 0 0.5" >
+  <a-scene fog="type: linear; far: 100" world="gravity: 0 0 0.5" >
     <a-assets>
       <a-mixin id="cube" proc-texture="type: grid; id: cube" geometry="primitive: box" material="color: red;" physics></a-mixin>
-      <a-mixin id="wall" physics="move: false" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 24 24" geometry="primitive: plane; height: 100; width: 100" material="color: green; side: double;" rotation="0 -90 0"></a-mixin>
+      <a-mixin id="wall" physics="move: false;bb: 100 100 1" move-texture="speed: -9 0" proc-texture="type: grid; repeat: 24 24" geometry="primitive: plane; height: 100; width: 100" material="side: double;" rotation="0 -90 0"></a-mixin>
       
       <!-- templates -->
       <script id="circle" type="text/x-jade-template">
@@ -102,7 +77,7 @@
         </div>
       </script>
     </a-assets>
-    <a-sky color="#000"></a-sky>
+    <a-sky></a-sky>
     <a-entity camera="near: 0.01;" look-controls look-move="max:10;min: -10" position="0 0 2" physics="move:false;"></a-entity>
     
     <!-- init scene -->
@@ -118,5 +93,28 @@
       <a-entity position="0 11 -40" mixin="wall" proc-texture="id: top" move-texture="speed: 0 9" rotation="-90 0 0"></a-entity>
     </a-entity>
   </a-scene>
+  
+  <script type="text/javascript">
+    var enemyCount = 20;
+    (function() {
+      'use strict';
+      var state = 'START';
+      
+      setInterval(function() {
+        if (state === 'RUNNING') {
+          enemyCount = Math.min(30, enemyCount + 1);
+        }
+      }, 1000);
+      
+      document.body.addEventListener('mousedown', function(e) {
+        if (state === 'START') {
+          document.getElementById('titleEntity').setAttribute('physics', 'bb: 0.1 0.1 0.1');
+          document.getElementById('spawner').setAttribute('spawner', 'enabled', true);
+          state = 'RUNNING';
+          enemyCount = 20;
+        }  
+      });
+    }());
+  </script>
 </body>
 </html>

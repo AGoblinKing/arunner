@@ -4,7 +4,7 @@
   'use strict';
 
   function dir(val) {
-    return val > 4 ? 1 : val < -4 ? -1 : 0;
+    return val > 2 ? 1 : val < -2 ? -1 : 0;
   }
 
   AFRAME.registerComponent('look-move', {

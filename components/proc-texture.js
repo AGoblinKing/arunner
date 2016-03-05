@@ -31,7 +31,7 @@
     get(data) {
       const key = data.id;
 
-      if (!this[key]) {
+      if (!key || !this[key]) {
         this[key] = createTexture(data);
       }
 
